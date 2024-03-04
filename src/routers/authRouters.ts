@@ -3,6 +3,7 @@ import { upload } from "../middlewares/imageHandler.js";
 import { IMAGE } from "../utils/constants.js";
 import { loginScheme, signUpScema } from "../utils/zodSchemas.js";
 import { loginUser, signUpUser } from "../services/authServices.js";
+import jwt, { Secret } from "jsonwebtoken";
 
 export const authRouter: Router = express.Router();
 
@@ -49,7 +50,20 @@ authRouter.post(
     try {
       const { username, password } = loginScheme.parse(req.body);
       await loginUser({ username, password });
-      res.status(200).send({ message: "Logged In" });
+      const token = jwt.sign(
+        { username: username },
+        process.env.PRIVATE_KEY as Secret,
+        {
+          expiresIn: "5d",
+        }
+      );
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          maxAge: 5 * 24 * 3600 * 1000,
+        })
+        .status(200)
+        .send({ message: "Logged In" });
     } catch (error) {
       next(error);
     }

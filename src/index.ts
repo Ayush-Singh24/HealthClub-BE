@@ -1,10 +1,12 @@
-import express, { Express } from "express";
+import express, { Express, Request, Response } from "express";
 import { config } from "dotenv";
 config();
 import cors, { CorsOptions } from "cors";
 import { PrismaClient } from "@prisma/client";
 import { authRouter } from "./routers/authRouters.js";
 import { errorHandler } from "./utils/errorHandler.js";
+import cookieParser from "cookie-parser";
+import { verifyToken } from "./middlewares/verifyToken.js";
 export const prisma = new PrismaClient();
 
 const PORT = process.env.PORT || 5000;
@@ -28,8 +30,14 @@ const corsOptions: CorsOptions = {
 
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use(errorHandler);
+
+app.get("/", verifyToken, (req: Request, res: Response) => {
+  res.send({});
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on ${PORT}🚀`);
 });
