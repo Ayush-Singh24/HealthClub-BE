@@ -3,7 +3,6 @@ import { Profession } from "../utils/constants.js";
 import { GeneralError } from "../utils/generalError.js";
 
 interface User {
-  id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -14,8 +13,7 @@ interface User {
   document: string;
   profilePic?: string;
 }
-const createUser = async ({
-  id,
+const signUpUser = async ({
   email,
   firstName,
   lastName,
