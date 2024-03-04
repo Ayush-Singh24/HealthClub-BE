@@ -8,7 +8,7 @@ interface User {
   firstName: string;
   lastName: string;
   username: string;
-  phonenumber: number;
+  phonenumber: string;
   password: string;
   profession: Profession;
   document: string;
