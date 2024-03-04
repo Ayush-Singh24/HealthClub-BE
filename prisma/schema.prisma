@@ -8,5 +8,26 @@ generator client {
 }
 
 model User {
-    userId Int @id @default(autoincrement())
+    id          String  @id @default(uuid())
+    email       String  @unique
+    firstName   String
+    lastName    String
+    username    String  @unique
+    phonenumber Int     @unique
+    password    String
+    profession  String
+    document    String
+    profilePic  String?
+    posts       Post[]
+}
+
+model Post {
+    id          String  @id @default(uuid())
+    title       String
+    description String
+    author      User    @relation(fields: [authorId], references: [id])
+    authorId    String
+    upvotes     Int     @default(0)
+    image       String?
+    tag         String
 }
