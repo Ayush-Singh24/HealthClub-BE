@@ -1,5 +1,6 @@
 import { prisma } from "../index.js";
-import { Profession } from "../utils/constants.js";
+import bcrypt from "bcrypt";
+import { Profession, SALT_ROUND } from "../utils/constants.js";
 import { GeneralError } from "../utils/generalError.js";
 
 interface User {
@@ -46,6 +47,8 @@ const signUpUser = async ({
     );
   }
 
+  const hashedPassword = await bcrypt.hash(password, SALT_ROUND);
+
   user = await prisma.user.create({
     data: {
       username,
@@ -54,10 +57,34 @@ const signUpUser = async ({
       firstName,
       lastName,
       document,
-      password,
+      password: hashedPassword,
       profession,
     },
   });
+
+  return user.username;
+};
+
+const loginUser = async ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}) => {
+  const user = await prisma.user.findUnique({ where: { username } });
+  if (!user) {
+    throw new GeneralError(404, "Username not found.");
+  }
+
+  const isPasswordCorrect: boolean = await bcrypt.compare(
+    password,
+    user.password
+  );
+
+  if (!isPasswordCorrect) {
+    throw new GeneralError(401, "Incorrect Password");
+  }
 
   return user.username;
 };

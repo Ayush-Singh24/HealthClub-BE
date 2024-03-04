@@ -49,3 +49,4 @@ export type Profession =
   | "Nuclear Medicine Technologist"
   | "Orthotist or Prosthetist"
   | "Psychiatrist";
+export const SALT_ROUND: number = 10;
