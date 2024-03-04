@@ -50,3 +50,4 @@ export type Profession =
   | "Orthotist or Prosthetist"
   | "Psychiatrist";
 export const SALT_ROUND: number = 10;
+export const IMAGE = "crazy";

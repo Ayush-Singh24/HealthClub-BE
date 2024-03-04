@@ -2,6 +2,8 @@ import { prisma } from "../index.js";
 import bcrypt from "bcrypt";
 import { Profession, SALT_ROUND } from "../utils/constants.js";
 import { GeneralError } from "../utils/generalError.js";
+import { signUpScema } from "../utils/zodSchemas.js";
+import { z } from "zod";
 
 interface User {
   email: string;
@@ -11,19 +13,20 @@ interface User {
   phonenumber: string;
   password: string;
   profession: Profession;
-  document: string;
   profilePic?: string;
 }
-const signUpUser = async ({
-  email,
-  firstName,
-  lastName,
-  username,
-  phonenumber,
-  password,
-  profession,
-  document,
-}: User) => {
+export const signUpUser = async (
+  {
+    email,
+    firstName,
+    lastName,
+    username,
+    phonenumber,
+    password,
+    profession,
+  }: z.infer<typeof signUpScema>,
+  document: string
+) => {
   let user = await prisma.user.findFirst({
     where: {
       OR: [
@@ -65,7 +68,7 @@ const signUpUser = async ({
   return user.username;
 };
 
-const loginUser = async ({
+export const loginUser = async ({
   username,
   password,
 }: {
