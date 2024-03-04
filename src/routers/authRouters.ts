@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from "express";
+import express, { Router, Request, Response, NextFunction } from "express";
 import { upload } from "../middlewares/imageHandler.js";
 import { IMAGE } from "../utils/constants.js";
 import { loginScheme, signUpScema } from "../utils/zodSchemas.js";
@@ -9,7 +9,7 @@ export const authRouter: Router = express.Router();
 authRouter.post(
   "/signup",
   upload.single(IMAGE),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
         username,
@@ -38,17 +38,20 @@ authRouter.post(
       );
       res.status(201).send({ message: "Signed Up" });
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 );
 
-authRouter.post("/login", async (req: Request, res: Response) => {
-  try {
-    const { username, password } = loginScheme.parse(req.body);
-    await loginUser({ username, password });
-    res.status(200).send({ message: "Logged In" });
-  } catch (error) {
-    console.log(error);
+authRouter.post(
+  "/login",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { username, password } = loginScheme.parse(req.body);
+      await loginUser({ username, password });
+      res.status(200).send({ message: "Logged In" });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
