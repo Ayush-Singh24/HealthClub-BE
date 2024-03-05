@@ -7,6 +7,8 @@ import { authRouter } from "./routers/authRouters.js";
 import { errorHandler } from "./utils/errorHandler.js";
 import cookieParser from "cookie-parser";
 import { verifyToken } from "./middlewares/verifyToken.js";
+import helmet from "helmet";
+import morgan from "morgan";
 export const prisma = new PrismaClient();
 
 const PORT = process.env.PORT || 5000;
@@ -30,6 +32,8 @@ const corsOptions: CorsOptions = {
 
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(helmet());
+app.use(morgan("common"));
 app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use(errorHandler);
