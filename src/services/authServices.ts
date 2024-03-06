@@ -2,7 +2,7 @@ import { prisma } from "../index.js";
 import bcrypt from "bcrypt";
 import { Profession, SALT_ROUND } from "../utils/constants.js";
 import { GeneralError } from "../utils/generalError.js";
-import { signUpScema } from "../utils/zodSchemas.js";
+import { signUpSchema } from "../utils/zodSchemas.js";
 import { z } from "zod";
 
 interface User {
@@ -24,7 +24,7 @@ export const signUpUser = async (
     phonenumber,
     password,
     profession,
-  }: z.infer<typeof signUpScema>,
+  }: z.infer<typeof signUpSchema>,
   document: string
 ) => {
   let user = await prisma.user.findFirst({

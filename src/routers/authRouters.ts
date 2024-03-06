@@ -1,7 +1,7 @@
 import express, { Router, Request, Response, NextFunction } from "express";
 import { upload } from "../middlewares/imageHandler.js";
 import { IMAGE } from "../utils/constants.js";
-import { loginScheme, signUpScema } from "../utils/zodSchemas.js";
+import { loginSchema, signUpSchema } from "../utils/zodSchemas.js";
 import { loginUser, signUpUser } from "../services/authServices.js";
 import jwt, { Secret } from "jsonwebtoken";
 
@@ -20,7 +20,7 @@ authRouter.post(
         lastName,
         phonenumber,
         profession,
-      } = signUpScema.parse(JSON.parse(req.body.data));
+      } = signUpSchema.parse(JSON.parse(req.body.data));
 
       if (!req.file) {
         throw new Error("Attach image");
@@ -48,7 +48,7 @@ authRouter.post(
   "/login",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { username, password } = loginScheme.parse(req.body);
+      const { username, password } = loginSchema.parse(req.body);
       await loginUser({ username, password });
       const token = jwt.sign(
         { username: username },

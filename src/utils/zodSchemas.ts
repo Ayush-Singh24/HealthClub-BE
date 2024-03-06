@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const signUpScema = z.object({
+export const signUpSchema = z.object({
   username: z
     .string({ required_error: "Username is required" })
     .min(5, { message: "Username must be 5 or more characters long" })
@@ -30,7 +30,7 @@ export const signUpScema = z.object({
   }),
 });
 
-export const loginScheme = z.object({
+export const loginSchema = z.object({
   username: z
     .string({ required_error: "Username is required" })
     .min(5, { message: "Username must be 5 or more characters long" })
