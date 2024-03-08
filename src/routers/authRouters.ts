@@ -69,3 +69,14 @@ authRouter.post(
     }
   }
 );
+
+authRouter.post(
+  "/logout",
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.cookie("token", null).status(200).send({ message: "Logged out" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);

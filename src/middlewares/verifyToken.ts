@@ -44,7 +44,7 @@ export const verifyToken = async (
     if (error instanceof GeneralError) {
       res.status(error.status).send({ message: error.message });
     } else {
-      res.status(500).send({ message: "Server Error" });
+      res.status(500).send({ message: "Token expired" });
     }
   }
 };
