@@ -5,16 +5,6 @@ import { GeneralError } from "../utils/generalError.js";
 import { signUpSchema } from "../utils/zodSchemas.js";
 import { z } from "zod";
 
-interface User {
-  email: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  phonenumber: string;
-  password: string;
-  profession: Profession;
-  profilePic?: string;
-}
 export const signUpUser = async (
   {
     email,
