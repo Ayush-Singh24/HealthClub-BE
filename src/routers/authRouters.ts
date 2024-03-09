@@ -37,7 +37,18 @@ authRouter.post(
         },
         req.file.path
       );
-      res.status(201).send({ message: "Signed Up" });
+      const token = jwt.sign(
+        { username: username },
+        process.env.PRIVATE_KEY as Secret,
+        { expiresIn: "5d" }
+      );
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          maxAge: 5 * 24 * 3600 * 1000,
+        })
+        .status(201)
+        .send({ message: "Signed Up" });
     } catch (error) {
       next(error);
     }
