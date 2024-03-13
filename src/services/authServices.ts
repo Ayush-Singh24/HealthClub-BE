@@ -1,6 +1,6 @@
 import { prisma } from "../index.js";
 import bcrypt from "bcrypt";
-import { Profession, SALT_ROUND } from "../utils/constants.js";
+import { SALT_ROUND } from "../utils/constants.js";
 import { GeneralError } from "../utils/generalError.js";
 import { signUpSchema } from "../utils/zodSchemas.js";
 import { z } from "zod";
