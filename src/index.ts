@@ -2,11 +2,11 @@ import express, { Express, Request, Response } from "express";
 import { config } from "dotenv";
 config();
 import cors, { CorsOptions } from "cors";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { authRouter } from "./routers/authRouters.js";
 import { errorHandler } from "./utils/errorHandler.js";
 import cookieParser from "cookie-parser";
-import { verifyToken } from "./middlewares/verifyToken.js";
+import { CustomRequest, verifyToken } from "./middlewares/verifyToken.js";
 import helmet from "helmet";
 import morgan from "morgan";
 export const prisma = new PrismaClient();
@@ -38,8 +38,13 @@ app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use(errorHandler);
 
-app.get("/", verifyToken, (req: Request, res: Response) => {
-  res.send({});
+app.get("/", verifyToken, (req: CustomRequest, res: Response) => {
+  if (req.user) {
+    const { document, password, ...userDetails } = req.user;
+    res.status(200).send({ userDetails });
+  } else {
+    res.send({});
+  }
 });
 
 app.listen(PORT, () => {

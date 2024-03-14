@@ -2,22 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { Secret } from "jsonwebtoken";
 import { prisma } from "../index.js";
 import { GeneralError } from "../utils/generalError.js";
+import { User } from "@prisma/client";
 interface JwtPayLoad {
   username: string;
 }
-interface CustomRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    username: string;
-    phonenumber: string;
-    password: string;
-    profession: string;
-    document: string;
-    profilePic: string | null;
-  };
+export interface CustomRequest extends Request {
+  user?: User;
 }
 export const verifyToken = async (
   req: CustomRequest,
@@ -38,8 +28,8 @@ export const verifyToken = async (
     if (!user) {
       throw new GeneralError(401, "Not Authorized");
     }
-    next();
     req.user = user;
+    next();
   } catch (error) {
     if (error instanceof GeneralError) {
       res.status(error.status).send({ message: error.message });
