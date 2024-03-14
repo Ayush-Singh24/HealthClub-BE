@@ -2,3 +2,4 @@ node_modules/
 Images/
 .vscode
 .env
+service-key.json

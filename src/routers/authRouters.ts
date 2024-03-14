@@ -4,14 +4,8 @@ import { IMAGE } from "../utils/constants.js";
 import { loginSchema, signUpSchema } from "../utils/zodSchemas.js";
 import { loginUser, signUpUser } from "../services/authServices.js";
 import jwt, { Secret } from "jsonwebtoken";
-import {
-  StorageReference,
-  UploadMetadata,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
-import { fstorage } from "../config/firebase.js";
+import { bucket } from "../config/firebase.js";
+import { getDownloadURL } from "firebase-admin/storage";
 
 export const authRouter: Router = express.Router();
 
@@ -33,17 +27,13 @@ authRouter.post(
       if (!req.file) {
         throw new Error("Attach image");
       }
-      console.log(req.file.originalname);
+      const fileRef = bucket.file(req.file.originalname);
+      await fileRef.save(req.file.buffer, {
+        metadata: { contentType: req.file.mimetype },
+      });
 
-      const storageRef: StorageReference = ref(
-        fstorage,
-        `files/${req.file.originalname + Date.now()}`
-      );
-      const metaData: UploadMetadata = {
-        contentType: req.file.mimetype,
-      };
-      const snapshot = await uploadBytes(storageRef, req.file.buffer, metaData);
-      const url = await getDownloadURL(snapshot.ref);
+      const url = await getDownloadURL(fileRef);
+
       await signUpUser(
         {
           username,

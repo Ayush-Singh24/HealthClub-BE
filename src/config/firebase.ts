@@ -1,14 +1,12 @@
-import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app";
-import { FirebaseStorage, getStorage } from "firebase/storage";
+import admin from "firebase-admin";
+import { Storage, getStorage } from "firebase-admin/storage";
+import serviceAccount from "../../service-key.json";
+import { cert } from "firebase-admin/app";
 
-const firebaseConfig: FirebaseOptions = {
-  apiKey: process.env.apiKey,
-  authDomain: process.env.authDomain,
-  appId: process.env.appId,
-  storageBucket: process.env.storageBucket,
-  messagingSenderId: process.env.messagingSenderId,
-  projectId: process.env.projectId,
-};
+export const fapp: admin.app.App = admin.initializeApp({
+  credential: cert(serviceAccount as admin.ServiceAccount),
+  storageBucket: process.env.BUCKET_PATH,
+});
 
-export const fapp: FirebaseApp = initializeApp(firebaseConfig);
-export const fstorage: FirebaseStorage = getStorage();
+const fstorage: Storage = getStorage();
+export const bucket = fstorage.bucket();
