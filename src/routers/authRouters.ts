@@ -27,7 +27,9 @@ authRouter.post(
       if (!req.file) {
         throw new Error("Attach image");
       }
-      const fileRef = bucket.file(req.file.originalname);
+      const fileRef = bucket.file(
+        `${"files/" + req.file.originalname + "-" + Date.now()}`
+      );
       await fileRef.save(req.file.buffer, {
         metadata: { contentType: req.file.mimetype },
       });
