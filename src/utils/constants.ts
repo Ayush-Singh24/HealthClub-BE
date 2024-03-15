@@ -51,3 +51,4 @@ export type Profession =
   | "Psychiatrist";
 export const SALT_ROUND: number = 10;
 export const IMAGE = "crazy";
+export const POST_IMAGE = "cool";

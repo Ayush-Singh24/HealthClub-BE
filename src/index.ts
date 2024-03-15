@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import { CustomRequest, verifyToken } from "./middlewares/verifyToken.js";
 import helmet from "helmet";
 import morgan from "morgan";
+import { postRouter } from "./routers/postRouters.js";
 export const prisma = new PrismaClient();
 
 const PORT = process.env.PORT || 5000;
@@ -36,6 +37,7 @@ app.use(helmet());
 app.use(morgan("common"));
 app.use(cookieParser());
 app.use("/auth", authRouter);
+app.use("/post", postRouter);
 app.use(errorHandler);
 
 app.get("/", verifyToken, (req: CustomRequest, res: Response) => {

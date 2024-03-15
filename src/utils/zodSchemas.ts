@@ -42,3 +42,13 @@ export const loginSchema = z.object({
     .min(5, { message: "Password must be 5 or more characters long" })
     .max(30, "Password must be 30 or fewer characters long"),
 });
+
+export const postSchema = z.object({
+  title: z
+    .string({ required_error: "Title is required" })
+    .max(30, { message: "Title must be 30 or fewer characters long" }),
+  description: z
+    .string()
+    .max(280, { message: "Description must be 280 or fewer characters long" }),
+  tag: z.string().optional().nullable().default(null),
+});
