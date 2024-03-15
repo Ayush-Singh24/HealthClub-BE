@@ -30,5 +30,5 @@ model Post {
     authorId    String
     upvotes     Int     @default(0)
     image       String?
-    tag         String
+    tag         String?
 }
