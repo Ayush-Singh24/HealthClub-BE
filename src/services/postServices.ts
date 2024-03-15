@@ -29,7 +29,19 @@ export const createPost = async (
 };
 
 export const getAllPosts = async () => {
-  const posts = await prisma.post.findMany();
+  const posts = await prisma.post.findMany({ include: { author: true } });
   if (!posts) throw new GeneralError(404, "Posts not found.");
-  return posts;
+  const postsAuthors = posts.map((post) => {
+    const {
+      document,
+      id,
+      isVerified,
+      phonenumber,
+      password,
+      ...authorDetails
+    } = post.author;
+    const { author, authorId, ...remainingpost } = post;
+    return { ...remainingpost, authorDetails };
+  });
+  return postsAuthors;
 };
