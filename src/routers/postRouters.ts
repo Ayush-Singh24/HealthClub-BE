@@ -4,7 +4,7 @@ import { POST_IMAGE } from "../utils/constants.js";
 import { postSchema } from "../utils/zodSchemas.js";
 import { bucket } from "../config/firebase.js";
 import { getDownloadURL } from "firebase-admin/storage";
-import { createPost } from "../services/postServices.js";
+import { createPost, getAllPosts } from "../services/postServices.js";
 import { CustomRequest, verifyToken } from "../middlewares/verifyToken.js";
 export const postRouter: Router = express.Router();
 
@@ -32,6 +32,18 @@ postRouter.post(
       } else {
         res.send({});
       }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+postRouter.get(
+  "/all/",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const posts = await getAllPosts();
+      res.status(200).send({ posts });
     } catch (error) {
       next(error);
     }

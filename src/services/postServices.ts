@@ -27,3 +27,9 @@ export const createPost = async (
     throw new GeneralError(409, "Some error occured while posting the post.");
   return post;
 };
+
+export const getAllPosts = async () => {
+  const posts = await prisma.post.findMany();
+  if (!posts) throw new GeneralError(404, "Posts not found.");
+  return posts;
+};
