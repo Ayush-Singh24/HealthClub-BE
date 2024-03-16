@@ -1,4 +1,3 @@
-import { Post } from "@prisma/client";
 import { prisma } from "../index.js";
 import { GeneralError } from "../utils/generalError.js";
 import { postSchema } from "../utils/zodSchemas.js";
