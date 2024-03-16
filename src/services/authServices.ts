@@ -4,6 +4,7 @@ import { SALT_ROUND } from "../utils/constants.js";
 import { GeneralError } from "../utils/generalError.js";
 import { signUpSchema } from "../utils/zodSchemas.js";
 import { z } from "zod";
+import { fixedDateToPrisma } from "../utils/fixDateTime.js";
 
 export const signUpUser = async (
   {
@@ -52,6 +53,7 @@ export const signUpUser = async (
       document,
       password: hashedPassword,
       profession,
+      joinedOn: fixedDateToPrisma(new Date()),
     },
   });
 

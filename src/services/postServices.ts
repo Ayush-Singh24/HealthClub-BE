@@ -1,4 +1,5 @@
 import { prisma } from "../index.js";
+import { fixedDateToPrisma } from "../utils/fixDateTime.js";
 import { GeneralError } from "../utils/generalError.js";
 import { postSchema } from "../utils/zodSchemas.js";
 import { z } from "zod";
@@ -20,6 +21,7 @@ export const createPost = async (
       title,
       tag,
       image,
+      postedOn: fixedDateToPrisma(new Date()),
     },
   });
   if (!post)
@@ -37,6 +39,7 @@ export const getAllPosts = async () => {
       isVerified,
       phonenumber,
       password,
+      joinedOn,
       ...authorDetails
     } = post.author;
     const { author, authorId, ...remainingpost } = post;

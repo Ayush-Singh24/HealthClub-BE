@@ -17,6 +17,7 @@ model User {
     password    String
     profession  String
     document    String
+    joinedOn    DateTime
     profilePic  String?
     isVerified  Boolean   @default(false)
     posts       Post[]
@@ -32,13 +33,15 @@ model Post {
     upvotes     Int       @default(0)
     image       String?
     tag         String?
+    postedOn    DateTime
     comments    Comment[]
 }
 
 model Comment {
-    id     String @id @default(uuid())
-    posts  Post   @relation(fields: [postId], references: [id])
-    postId String
-    user   User   @relation(fields: [userId], references: [id])
-    userId String
+    id          String   @id @default(uuid())
+    posts       Post     @relation(fields: [postId], references: [id])
+    postId      String
+    user        User     @relation(fields: [userId], references: [id])
+    userId      String
+    commentedOn DateTime
 }
