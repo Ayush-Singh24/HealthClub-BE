@@ -30,7 +30,9 @@ export const createPost = async (
 };
 
 export const getAllPosts = async () => {
-  const posts = await prisma.post.findMany({ include: { author: true } });
+  const posts = await prisma.post.findMany({
+    include: { author: true, comments: true },
+  });
   if (!posts) throw new GeneralError(404, "Posts not found.");
   const postsAuthors = posts.map((post) => {
     const {
@@ -42,8 +44,9 @@ export const getAllPosts = async () => {
       joinedOn,
       ...authorDetails
     } = post.author;
-    const { author, authorId, ...remainingpost } = post;
-    return { ...remainingpost, authorDetails };
+    const numberOfComments = post.comments.length;
+    const { author, authorId, comments, ...remainingpost } = post;
+    return { ...remainingpost, authorDetails, numberOfComments };
   });
   return postsAuthors;
 };
