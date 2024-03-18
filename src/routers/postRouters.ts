@@ -7,6 +7,7 @@ import { getDownloadURL } from "firebase-admin/storage";
 import {
   createPost,
   getAllPosts,
+  unVotePost,
   upVotePost,
 } from "../services/postServices.js";
 import { CustomRequest, verifyToken } from "../middlewares/verifyToken.js";
@@ -63,6 +64,24 @@ postRouter.post(
       const userId = req.user?.id;
       if (postId && userId) {
         const { message } = await upVotePost({ postId, userId });
+        res.status(200).send({ message });
+      } else {
+        res.status(404).send({ message: "userId or postId not found." });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+postRouter.post(
+  "/unvote/:postid",
+  verifyToken,
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    try {
+      const postId = req.params.postid;
+      const userId = req.user?.id;
+      if (postId && userId) {
+        const { message } = await unVotePost({ postId, userId });
         res.status(200).send({ message });
       } else {
         res.status(404).send({ message: "userId or postId not found." });

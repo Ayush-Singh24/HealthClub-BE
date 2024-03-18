@@ -74,23 +74,7 @@ export const upVotePost = async ({
   });
   if (!post) throw new GeneralError(404, "Post not found.");
   const alreadyUpvoted = post.upVoters.find((upvoter) => upvoter.id === userId);
-  if (alreadyUpvoted) {
-    const updatedPost = await prisma.post.update({
-      where: {
-        id: postId,
-      },
-      data: {
-        upvotes: {
-          decrement: 1,
-        },
-        upVoters: {
-          disconnect: [{ id: userId }],
-        },
-      },
-    });
-    if (!updatedPost) throw new GeneralError(500, "Update failed.");
-    return { updatedPost, message: "Unvoted Successfully!" };
-  }
+  if (alreadyUpvoted) throw new GeneralError(400, "Already Upvoted");
   const updatedPost = await prisma.post.update({
     where: {
       id: postId,
@@ -106,4 +90,41 @@ export const upVotePost = async ({
   });
   if (!updatedPost) throw new GeneralError(500, "Update failed.");
   return { updatedPost, message: "Upvoted Successfully!" };
+};
+
+export const unVotePost = async ({
+  postId,
+  userId,
+}: {
+  postId: string;
+  userId: string;
+}) => {
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    include: {
+      upVoters: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+  if (!post) throw new GeneralError(404, "Post not found.");
+  const alreadyUpvoted = post.upVoters.find((upvoter) => upvoter.id === userId);
+  if (!alreadyUpvoted) throw new GeneralError(400, "Already Unvoted!");
+  const updatedPost = await prisma.post.update({
+    where: {
+      id: postId,
+    },
+    data: {
+      upvotes: {
+        decrement: 1,
+      },
+      upVoters: {
+        disconnect: [{ id: userId }],
+      },
+    },
+  });
+  if (!updatedPost) throw new GeneralError(500, "Update failed.");
+  return { updatedPost, message: "Unvoted Successfully!" };
 };
