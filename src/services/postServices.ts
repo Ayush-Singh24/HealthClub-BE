@@ -42,6 +42,11 @@ export const getAllPosts = async () => {
           profession: true,
         },
       },
+      upVoters: {
+        select: {
+          id: true,
+        },
+      },
       comments: true,
     },
   });
