@@ -4,7 +4,11 @@ import { POST_IMAGE } from "../utils/constants.js";
 import { postSchema } from "../utils/zodSchemas.js";
 import { bucket } from "../config/firebase.js";
 import { getDownloadURL } from "firebase-admin/storage";
-import { createPost, getAllPosts } from "../services/postServices.js";
+import {
+  createPost,
+  getAllPosts,
+  upVotePost,
+} from "../services/postServices.js";
 import { CustomRequest, verifyToken } from "../middlewares/verifyToken.js";
 export const postRouter: Router = express.Router();
 
@@ -44,6 +48,25 @@ postRouter.get(
     try {
       const posts = await getAllPosts();
       res.status(200).send({ posts });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+postRouter.post(
+  "/upvote/:postid",
+  verifyToken,
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    try {
+      const { postid } = req.params;
+      const userid = req.user?.id;
+      if (postid && userid) {
+        await upVotePost({ postId: postid, userId: userid });
+        res.status(200).send({ message: "Upvoted Successfully." });
+      } else {
+        res.status(404).send({ message: "Userid or postid not found." });
+      }
     } catch (error) {
       next(error);
     }

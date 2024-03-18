@@ -50,3 +50,29 @@ export const getAllPosts = async () => {
   });
   return postsAuthors;
 };
+
+export const upVotePost = async ({
+  postId,
+  userId,
+}: {
+  postId: string;
+  userId: string;
+}) => {
+  const post = await prisma.post.findUnique({ where: { id: postId } });
+  if (!post) throw new GeneralError(404, "Post not found.");
+  const updatedPost = await prisma.post.update({
+    where: {
+      id: postId,
+    },
+    data: {
+      upVoters: {
+        connect: [{ id: userId }],
+      },
+      upvotes: {
+        increment: 1,
+      },
+    },
+  });
+  if (!updatedPost) throw new GeneralError(500, "Update failed.");
+  return post;
+};
