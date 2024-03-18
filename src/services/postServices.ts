@@ -37,6 +37,7 @@ export const getAllPosts = async () => {
           email: true,
           firstName: true,
           lastName: true,
+          username: true,
           profilePic: true,
           profession: true,
         },
@@ -61,8 +62,19 @@ export const upVotePost = async ({
   postId: string;
   userId: string;
 }) => {
-  const post = await prisma.post.findUnique({ where: { id: postId } });
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    include: {
+      upVoters: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
   if (!post) throw new GeneralError(404, "Post not found.");
+  const alreadUpvoted = post.upVoters.find((upvoter) => upvoter.id === userId);
+  if (alreadUpvoted) throw new GeneralError(400, "Already Upvoted.");
   const updatedPost = await prisma.post.update({
     where: {
       id: postId,
