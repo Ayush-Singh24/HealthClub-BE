@@ -59,13 +59,13 @@ postRouter.post(
   verifyToken,
   async (req: CustomRequest, res: Response, next: NextFunction) => {
     try {
-      const { postid } = req.params;
-      const userid = req.user?.id;
-      if (postid && userid) {
-        await upVotePost({ postId: postid, userId: userid });
-        res.status(200).send({ message: "Upvoted Successfully." });
+      const postId = req.params.postid;
+      const userId = req.user?.id;
+      if (postId && userId) {
+        const { message } = await upVotePost({ postId, userId });
+        res.status(200).send({ message });
       } else {
-        res.status(404).send({ message: "Userid or postid not found." });
+        res.status(404).send({ message: "userId or postId not found." });
       }
     } catch (error) {
       next(error);
